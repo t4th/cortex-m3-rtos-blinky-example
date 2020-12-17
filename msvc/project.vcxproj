@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;STM32F10X_HD;__ARMCC_VERSION=6010050;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);..\external\arm;..\external\st\STM32F10x;..\rtos\source\;..\rtos\source\common;..\rtos\source\event;..\rtos\source\handle;..\rtos\source\scheduler;..\rtos\source\task;..\rtos\source\timer;..\rtos\source\system_timer;..\rtos\source\hardware;..\rtos\source\lock;..\rtos\source\config</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\source\gpio;$(SolutionDir);..\external\arm;..\external\st\STM32F10x;..\rtos\source\;..\rtos\source\common;..\rtos\source\event;..\rtos\source\handle;..\rtos\source\scheduler;..\rtos\source\task;..\rtos\source\timer;..\rtos\source\system_timer;..\rtos\source\hardware;..\rtos\source\lock;..\rtos\source\config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/D "__attribute__(a)=" /D "__builtin_arm_dmb(a)=" /D "__builtin_arm_dsb(a)=" /D "__builtin_arm_isb(a)=" /D "__builtin_arm_nop(a)=" /D "__enable_irq()=" /D "__disable_irq()="  /D " __BKPT(a)=" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="..\rtos\source\hardware\armv7m\hardware.cpp" />
     <ClCompile Include="..\rtos\source\kernel.cpp" />
+    <ClCompile Include="..\source\main\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\rtos\source\common\circular_list.hpp" />
@@ -172,10 +173,12 @@
     <ClInclude Include="..\rtos\source\scheduler\wait_list.hpp" />
     <ClInclude Include="..\rtos\source\task\task.hpp" />
     <ClInclude Include="..\rtos\source\timer\timer.hpp" />
+    <ClInclude Include="..\source\gpio\gpio.hpp" />
     <ClInclude Include="arm_compat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\external\st\STM32F10x\startup_stm32f10x_hd.s" />
+    <None Include="..\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
