@@ -60,11 +60,127 @@ namespace gpio
         Set
     };
 
+    // Public user API.
+
+    // Input Mode:
+    template < Port a_port, Pin a_pin, InputMode a_mode>
+    void setPinAsInput();
+
+    template < Port a_port, Pin a_pin>
+    bool getInputPinValue();
+
+    // Output Mode:
+    template < Port a_port, Pin a_pin, OutputSpeed a_speed, OutputMode a_mode>
+    void setPinAsOutput();
+
+    template < Port a_port, Pin a_pin>
+    void setOutputPin();
+
+    template < Port a_port, Pin a_pin>
+    void clearOutputPin();
+
+    template < Port a_port, Pin a_pin>
+    bool getOutputPinValue();
+
+
+    // Private implementation.
+
+    // Definitions.
+
+    // GPIO helper functions. Should not be used externaly.
     namespace internal
     {
-        constexpr GPIO_TypeDef * getBase(gpio::Port a_port)
+        constexpr GPIO_TypeDef * getBase( gpio::Port a_port);
+        constexpr u32 getPinNumber( gpio::Pin a_pin);
+        constexpr u32 getInputMode( gpio::InputMode a_mode);
+        constexpr u32 getOutputMode( gpio::OutputMode a_mode);
+        constexpr u32 getSpeed( gpio::OutputSpeed a_speed);
+        constexpr void setPinMode( GPIO_TypeDef * ap_gpio, u32 a_pin, u32 a_mode, u32 a_config);
+    }
+
+    // Input Mode
+    template < Port a_port, Pin a_pin, InputMode a_mode>
+    void setPinAsInput()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+        u32 mode = internal::getInputMode( a_mode);
+
+        constexpr u32 InputMode = 0U;
+        internal::setPinMode( gpio, pin, InputMode, mode);
+    }
+
+    template < Port a_port, Pin a_pin>
+    bool getInputPinValue()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+
+        u32 result = ( gpio->IDR  >> pin) & 0x1U;
+
+        if ( result)
         {
-            switch (a_port)
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Output Mode
+    template < Port a_port, Pin a_pin, OutputSpeed a_speed, OutputMode a_mode>
+    void setPinAsOutput()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+        u32 speed = internal::getSpeed( a_speed);
+        u32 mode = internal::getOutputMode( a_mode);
+
+        internal::setPinMode( gpio, pin, speed, mode);
+    }
+
+    template < Port a_port, Pin a_pin>
+    void setOutputPin()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+
+        gpio->BSRR = ( 1U << pin);
+    }
+
+    template < Port a_port, Pin a_pin>
+    void clearOutputPin()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+
+        gpio->BRR = ( 1U << pin);
+    }
+
+    template < Port a_port, Pin a_pin>
+    bool getOutputPinValue()
+    {
+        GPIO_TypeDef * gpio = internal::getBase( a_port);
+        u32 pin = internal::getPinNumber( a_pin);
+
+        u32 result = ( gpio->ODR  >> pin) & 0x1U;
+
+        if ( result)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    namespace internal
+    {
+        constexpr GPIO_TypeDef * getBase( gpio::Port a_port)
+        {
+            switch ( a_port)
             {
             case gpio::Port::A:
                 return GPIOA;
@@ -121,98 +237,20 @@ namespace gpio
             if ( a_pin < 8U) /* CRL register */
             {
                 u32 temp = ap_gpio->CRL;
-                temp &= ~( mask << ( a_pin * 4 ));      /* clear fields */
-                temp |=  a_mode << ( a_pin * 4);        /* set MODE field */
-                temp |=  a_config  << ( ( a_pin * 4) + 2); /* set CNF field */
+                temp &= ~( mask << ( a_pin * 4U));               /* clear fields */
+                temp |=  a_mode << ( a_pin * 4U);                /* set MODE field */
+                temp |=  a_config  << ( ( a_pin * 4U) + 2U);      /* set CNF field */
                 ap_gpio->CRL = temp;
             } 
             else /* CRH register */
             {
                 a_pin -= 8U;
                 u32 temp = ap_gpio->CRH;
-                temp &= ~( mask << ( a_pin * 4 ));      /* clear fields */
-                temp |=  a_mode << ( a_pin * 4);        /* set MODE field */
-                temp |=  a_config  << ( ( a_pin * 4) + 2); /* set CNF field */
+                temp &= ~( mask << ( a_pin * 4U));              /* clear fields */
+                temp |=  a_mode << ( a_pin * 4U);               /* set MODE field */
+                temp |=  a_config  << ( ( a_pin * 4U) + 2U);    /* set CNF field */
                 ap_gpio->CRH = temp;
             }
-        }
-    }
-
-    // Input Mode
-    template <Port a_port, Pin a_pin, InputMode a_mode>
-    void setPinAsInput()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-        u32 mode = internal::getInputMode( a_mode);
-
-        constexpr u32 InputMode = 0U;
-        internal::setPinMode( gpio, pin, InputMode, mode);
-    }
-
-    template <Port a_port, Pin a_pin>
-    bool getInputPinValue()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-
-        u32 result = ( gpio->IDR  >> pin) & 0x1U;
-
-        if ( result)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // Output Mode
-    template <Port a_port, Pin a_pin, OutputSpeed a_speed, OutputMode a_mode>
-    void setPinAsOutput()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-        u32 speed = internal::getSpeed( a_speed);
-        u32 mode = internal::getOutputMode( a_mode);
-
-        internal::setPinMode( gpio, pin, speed, mode);
-    }
-
-    template <Port a_port, Pin a_pin>
-    void setOutputPin()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-
-        gpio->BSRR = ( 1U << pin);
-    }
-
-    template <Port a_port, Pin a_pin>
-    void clearOutputPin()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-
-        gpio->BRR = ( 1U << pin);
-    }
-
-    template <Port a_port, Pin a_pin>
-    bool getOutputPinValue()
-    {
-        GPIO_TypeDef * gpio = internal::getBase( a_port);
-        u32 pin = internal::getPinNumber( a_pin);
-
-        u32 result = ( gpio->ODR  >> pin) & 0x1U;
-
-        if ( result)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 }
