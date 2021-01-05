@@ -338,7 +338,7 @@
               <MiscControls>-fno-exceptions</MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\external\arm;..\external\st\STM32F10x;..\rtos\source;..\rtos\source\config;..\rtos\source\hardware;..\rtos\source\common;..\rtos\source\event;..\rtos\source\handle;..\rtos\source\lock;..\rtos\source\system_timer;..\rtos\source\task;..\rtos\source\timer;..\rtos\source\scheduler;..\source\gpio</IncludePath>
+              <IncludePath>..\external\arm;..\external\st\STM32F10x;..\rtos\source;..\source\gpio</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

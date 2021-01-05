@@ -8,7 +8,7 @@
 // all 4 leds are blinking at the same time.
 
 #include <kernel.hpp>
-#include <hardware.hpp>
+#include "hardware/hardware.hpp"
 
 #include <gpio.hpp>
 
@@ -20,7 +20,7 @@ struct LedState
     bool led3;
 };
 
-volatile LedState g_ledStates; // for software debug analyzer
+volatile LedState g_ledStates; // For software debug analyzer.
 
 enum class Led
 {
@@ -37,19 +37,19 @@ void setLed( Led a_led)
     switch ( a_led)
     {
     case Led::Number0:
-        gpio::setOutputPin<gpio::Port::F, gpio::Pin::Number6>();
+        gpio::setOutputPin< gpio::Port::F, gpio::Pin::Number6>();
         g_ledStates.led0 = true;
         break;
     case Led::Number1:
-        gpio::setOutputPin<gpio::Port::F, gpio::Pin::Number7>();
+        gpio::setOutputPin< gpio::Port::F, gpio::Pin::Number7>();
         g_ledStates.led1 = true;
         break;
     case Led::Number2:
-        gpio::setOutputPin<gpio::Port::F, gpio::Pin::Number8>();
+        gpio::setOutputPin< gpio::Port::F, gpio::Pin::Number8>();
         g_ledStates.led2 = true;
         break;
     case Led::Number3:
-        gpio::setOutputPin<gpio::Port::F, gpio::Pin::Number9>();
+        gpio::setOutputPin< gpio::Port::F, gpio::Pin::Number9>();
         g_ledStates.led3 = true;
         break;
     default:
