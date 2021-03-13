@@ -8,7 +8,6 @@
 // all 4 leds are blinking at the same time.
 
 #include <kernel.hpp>
-#include "hardware/hardware.hpp"
 
 #include <gpio.hpp>
 
@@ -20,7 +19,9 @@ struct LedState
     bool led3;
 };
 
-volatile LedState g_ledStates; // For software debug analyzer.
+// Global variable used for software debug analysis
+// when using simulator mode.
+volatile LedState g_ledStates;
 
 enum class Led
 {
